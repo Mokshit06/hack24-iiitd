@@ -15,19 +15,42 @@ datasource db {
 }
 
 model User {
-    id Int @id @default(uuid())
+    id                String        @id @default(cuid())
+    name              String
+    email             String        @unique
+    class             Class?        @relation(fields: [classId], references: [id])
+    classId           String?
+    createdAt         DateTime      @default(now())
+    updatedAt         DateTime      @updatedAt
+    progress          Progress[]
+    active_assigments Assignments[]
+    accounts          Account[]
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Class {
+    id          String        @id @default(cuid())
+    name        String
+    users       User[]
+    assignments Assignments[]
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+}
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+model Assignments {
+    id       String     @id @default(cuid())
+    name     String
+    class    Class      @relation(fields: [class_id], references: [id])
+    class_id String
+    users    User[]
+    progress Progress[]
+}
 
-    @@index([name])
+model Progress {
+    id           String      @id @default(cuid())
+    user         User        @relation(fields: [user_id], references: [id])
+    user_id      String      @unique
+    assignment   Assignments @relation(fields: [assignmentId], references: [id])
+    assignmentId String
 }
 
 // Necessary for Next auth
@@ -48,25 +71,6 @@ model Account {
     refresh_token_expires_in Int?
 
     @@unique([provider, providerAccountId])
-}
-
-model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
 }
 
 model VerificationToken {

@@ -3,7 +3,7 @@ import BlurIn from "@/components/magicui/blur-in";
 import Link from "next/link";
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
-import TypingAnimation from "@/components/magicui/typing-animation";
+
 import {
   BellIcon,
   CalendarIcon,
@@ -22,7 +22,7 @@ const features = [
     href: "/",
     cta: "Learn more",
     background: <img src="mathbgfinal.jpg" className="bg-repeat"/>,
-    className: "backdrop lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
+    className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
   },
   {
     Icon: InputIcon,
@@ -49,7 +49,7 @@ const features = [
     href: "/",
     cta: "Learn more",
     background: <img className="absolute opacity-60" src="socialscience.jpeg"/>,
-    className: "lg:col-start-3 lg:col-end-3 lg:row-start-1 lg:row-end-2",
+    className: " lg:col-start-3 lg:col-end-3 lg:row-start-1 lg:row-end-2",
   },
   {
     Icon: BellIcon,
@@ -80,11 +80,8 @@ export default function Home() {
         </div>
     </nav>
     <main className="bg-black h-full min-h-screen">
-        <div className="pt-10 pb-0"><TypingAnimation
-      className="text-5xl font-bold  text-white "
-      text="Hi, Ishaan Arora"
-    /></div>
-        <div className="p-10 pt-5">
+        <div className=" text-white font-bold text-5xl pl-10 pt-12"> Hi Ishaan Arora</div>
+        <div className="p-10">
           <div className="text-3xl text-gray-300 font-bold my-5 underline-offset-3 underline">
             Subjects
           </div>
