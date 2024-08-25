@@ -1,102 +1,86 @@
-import Head from "next/head";
-import BlurIn from "@/components/magicui/blur-in";
-import Link from "next/link";
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
-import TypingAnimation from "@/components/magicui/typing-animation";
-import {
-  BellIcon,
-  CalendarIcon,
-  FileTextIcon,
-  GlobeIcon,
-  InputIcon,
-} from "@radix-ui/react-icons";
- 
-import { BentoCard, BentoGrid } from "@/components/magicui/bento-grid";
- 
-const features = [
-  {
-    Icon: FileTextIcon,
-    name: "Mathematics",
-    description: "Its all fun and gammes until someone divides by zero",
-    href: "/",
-    cta: "Learn more",
-    background: <img src="mathbgfinal.jpg" className="bg-repeat"/>,
-    className: "backdrop lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
-  },
-  {
-    Icon: InputIcon,
-    name: "Science",
-    description: "Never trust an atom... they make up everything",
-    href: "/",
-    cta: "Learn more",
-    background: <img className="bg-repeat bg-center opacity-60" src="phybg.jpg" />,
-    className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
-  },
-  {
-    Icon: GlobeIcon,
-    name: "English",
-    description: `The 3 most untrue words in English are -"Studying is boring"`,
-    href: "/",
-    cta: "Learn more",
-    background: <img className="absolute -right-20 -top-20 opacity-60" src="englishfinal2.avif" />,
-    className: "lg:col-start-1 lg:col-end-2 lg:row-start-3 lg:row-end-4",
-  },
-  {
-    Icon: CalendarIcon,
-    name: "Social Science",
-    description: "Science, its like magic, but real",
-    href: "/",
-    cta: "Learn more",
-    background: <img className="absolute opacity-60" src="socialscience.jpeg"/>,
-    className: "lg:col-start-3 lg:col-end-3 lg:row-start-1 lg:row-end-2",
-  },
-  {
-    Icon: BellIcon,
-    name: "Moral Values",
-    description:
-      "We are all born as empty vessels and shaped through moral values",
-    href: "/",
-    cta: "Learn more",
-    background: <img className="absolute opacity-60" src="moralvalyes.avif"/>,
-    className: "lg:col-start-3 lg:col-end-3 lg:row-start-2 lg:row-end-4",
-  },
-];
- 
-
-import styles from "./index.module.css";
+import Navbar from '@/components/navbar';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export default function Home() {
-  return (
-    <div>
-    <nav className="bg-black p-4 flex justify-between items-center pt-7 pb-7 h-[50px] border-b border-b-gray-700 ">
-        <div className="text-white text-lg font-bold">
-            <a href="#">YourBrand</a>
-        </div>
-        <div>
-        <button className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Logout
-        </button>
-        </div>
-    </nav>
-    <main className="bg-black h-full min-h-screen">
-        <div className="pt-10 pb-0"><TypingAnimation
-      className="text-5xl font-bold  text-white "
-      text="Hi, Ishaan Arora"
-    /></div>
-        <div className="p-10 pt-5">
-          <div className="text-3xl text-gray-300 font-bold my-5 underline-offset-3 underline">
-            Subjects
-          </div>
+  const [email, setEmail] = useState('');
+  const router = useRouter();
 
-        <BentoGrid className="lg:grid-rows-3">
-      {features.map((feature) => (
-        <BentoCard key={feature.name} {...feature} />
-      ))}
-    </BentoGrid>
+  return (
+    <div className="min-h-screen text-[#e4e4e4] bg-[url('/hero.jpg')] bg-center bg-cover w-full overflow-x-hidden">
+      <Navbar />
+      <div className="max-w-[850px] ml-32 mt-20">
+        <h1 className="mb-10 font-sans text-7xl font-extrabold leading-[1.22]">
+          Make learning addictive with AI
+        </h1>
+        <div
+          onClick={() => {
+            // router.push('/login');
+            signIn('google', {
+              redirect: true,
+              callbackUrl: '/dashboard',
+            });
+          }}
+          className="flex max-w-[600px] [&>*]:pointer-events-none"
+        >
+          <input
+            placeholder="john@doe.com"
+            className="bg-[rgb(30_41_59/1)] border-none h-14 shadow-lg text-lg px-6 focus:border-none rounded-l-lg"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            disabled
+          />
+          <button
+            className="bg-[rgb(14_165_233/1)] px-8 text-md h-14 active:bg-[rgb(56_189_248/1)] hover:bg-[rgb(56_189_248/1)] rounded-r-lg"
+            disabled
+          >
+            Start now
+          </button>
+        </div>
       </div>
-    </main>
+      <div className="overflow-y-visible mt-20">
+        <div className="ml-[-5%] grid grid-cols-4 w-[110%] gap-x-10 gap-y-3">
+          <TaskPreview />
+          <TaskPreview />
+          <div className="p-4 rounded-lg shadow-lg backdrop-blur-md backdrop-brightness-120 border-2 border-[rgb(30_41_59/1)] flex justify-between gap-8">
+            <div className="h-full w-full">
+              <p className="mb-2 text-lg">
+                Solve trigonometry PSets and revise Unit Circle concept
+              </p>
+              <span className="bg-[rgb(14_165_233/0.8)] text-[theme.light] px-2 py-1 rounded">
+                Mathematics
+              </span>
+            </div>
+            <div className="h-full flex items-end">
+              <div className="w-8 h-8 rounded-full bg-gray-300"></div>
+            </div>
+          </div>
+          <TaskPreview />
+          <TaskPreview />
+          <TaskPreview />
+          <div></div>
+          <TaskPreview />
+          <div></div>
+          <TaskPreview />
+          <div></div>
+          <TaskPreview />
+        </div>
+      </div>
     </div>
   );
 }
 
+function TaskPreview() {
+  return (
+    <div className="p-4 rounded-lg shadow-xl backdrop-blur-md backdrop-brightness-120 border-2 border-[rgb(30_41_59/1)] w-full flex justify-between gap-8">
+      <div className="h-full w-full">
+        <div className="mb-3 h-4 w-full bg-[rgb(30_41_59/1)] rounded-md"></div>
+        <div className="h-3 w-1/2 bg-[rgb(30_41_59/1)] rounded-md opacity-70"></div>
+      </div>
+      <div className="h-full flex items-end">
+        <div className="h-5 w-5 rounded-full bg-[rgb(30_41_59/1)]"></div>
+      </div>
+    </div>
+  );
+}
