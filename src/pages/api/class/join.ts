@@ -19,8 +19,6 @@ export default async function handler(
 
   const { classId } = req.body;
 
-  console.log(classId, typeof req.body);
-
   if (!classId || typeof classId !== 'string') {
     return res.status(400).json({ message: 'Invalid class ID' });
   }

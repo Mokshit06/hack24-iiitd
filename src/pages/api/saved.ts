@@ -1,19 +1,21 @@
 import prisma from '@/lib/prisma';
+import { authOptions } from '@/server/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getServerSession } from 'next-auth';
 // import { PrismaClient } from '@prisma/client';
 import { getSession } from 'next-auth/react';
-
-// const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'GET') {
-    const session = await getSession({ req });
+    const session = await getServerSession(req, res, authOptions);
     if (!session || !session.user) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
+
+    console.log('umm');
 
     try {
       const user = await prisma.user.findUnique({
@@ -39,8 +41,7 @@ export default async function handler(
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
-
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
   if (!session || !session.user) {
     return res.status(401).json({ message: 'Unauthorized' });
   }

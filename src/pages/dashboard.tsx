@@ -111,6 +111,7 @@ export default function Home() {
 
             <BlurFade delay={0.4}>
               <div className="relative flex rounded-[12px] w-fit flex-col items-center justify-center overflow-hidden bg-transparent md:shadow-xl">
+                {/* @ts-ignore */}
                 <BentoCard {...features[0]} />
               </div>
             </BlurFade>

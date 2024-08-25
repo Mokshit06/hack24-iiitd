@@ -1,9 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 const anthropic = new Anthropic({
-  apiKey:
-    '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',
-  dangerouslyAllowBrowser: true,
+  apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
 export async function generateCode(topic: string) {

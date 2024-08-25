@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Class" ADD COLUMN     "section" TEXT NOT NULL DEFAULT 'A',
+ADD COLUMN     "standard" INTEGER NOT NULL DEFAULT 1;

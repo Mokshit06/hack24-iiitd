@@ -20,16 +20,19 @@ export default function Reel() {
       return;
     }
 
-    Promise.allSettled([
-      generateFeedItem(`${subject}—${topic}`),
-      generateFeedItem(`${subject}—${topic}`),
-      generateFeedItem(`${subject}—${topic}`),
-    ])
+    fetch(
+      `/api/feed?topic=${encodeURIComponent(
+        topic
+      )}&subject=${encodeURIComponent(subject)}`
+    )
+      .then(r => r.json())
       .then(items => {
-        setReels(items.filter(i => i.status === 'fulfilled').map(i => i.value));
+        console.log({ items });
+        setReels(items);
         setLoading(false);
       })
-      .catch(() => {
+      .catch(e => {
+        console.log('err', e);
         setLoading(false);
       });
   }, [loading, subject, topic]);
@@ -253,6 +256,9 @@ function ReelCard({ reel, i, topic }: { reel: any; i: number; topic: string }) {
                       username: reel.username,
                       subreddit: reel.subreddit,
                     }),
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
                   });
                 }}
                 className={clsx(
