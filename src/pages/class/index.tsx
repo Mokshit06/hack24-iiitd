@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import React from 'react';
+import React, { use } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Navbar from '@/components/navbar';
 import { toast } from 'sonner';
@@ -13,6 +13,8 @@ export default function Class() {
   if (status !== 'success' || !userClass) {
     return null;
   }
+
+  console.log(userClass);
 
   return (
     <div
@@ -30,7 +32,7 @@ export default function Class() {
       <div className="p-8 my-8 flex-1 w-full max-w-[1100px] rounded-lg bg-black/20 ring ring-border text-center shadow-sm text-white">
         <div className="my-2 text-left pl-4">
           <h1 className="mb-2 font-bold text-5xl">
-            Class {userClass.class.name}
+            Class {userClass.class.standard}-{userClass.class.section}
           </h1>
           <p className="text-2xl mt-6">
             Class Code:{' '}

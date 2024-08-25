@@ -9,6 +9,7 @@ import Navbar from '@/components/navbar';
 import Link from 'next/link';
 import ShinyButton from '@/components/magicui/shiny-button';
 import { useRouter } from 'next/router';
+import { useQuery } from '@tanstack/react-query';
 
 const features = [
   {
@@ -45,10 +46,23 @@ const features = [
   },
 ];
 
+const SUBJECT_TO_NAME = {
+  MATHS: 'Mathematics',
+  SOCIAL_STUDIES: 'Social Sciences',
+  SCIENCE: 'Science',
+  ENGLISH: 'English',
+  MORAL_VALUES: 'Moral Values',
+};
+
 export default function Home() {
   const [value, setValue] = useState(0);
   const router = useRouter();
   const subject = router.query.subject as string;
+  const topicsQuery = useQuery({
+    queryKey: ['topics', subject],
+    queryFn: () => fetch(`/api/subjects/${subject}`).then(r => r.json()),
+    enabled: !!subject,
+  });
 
   useEffect(() => {
     const handleIncrement = (prev: number) => {
@@ -74,7 +88,9 @@ export default function Home() {
       <Navbar />
       <main className="h-full min-h-screen text-white px-12 pb-4 pt-12">
         <div className="flex justify-between items-center">
-          <div className="text-5xl text-white font-bold">Mathematics</div>
+          <div className="text-5xl text-white font-bold">
+            {SUBJECT_TO_NAME[subject] ?? subject}
+          </div>
           <div className="">
             <AnimatedCircularProgressBar
               className="size-[100px]"
@@ -87,37 +103,30 @@ export default function Home() {
           </div>
         </div>
         <div className="relative h-full text-black mt-14">
-          {[
-            'Number Systems',
-            'Polynomials',
-            'Coordinate Geometry',
-            'Linear Equations in Two Variables',
-            "Introduction to Euclid's Geometry",
-            'Triangles',
-            'Quadrilaterals',
-            'Circles',
-          ].map((topic, i) => (
-            <div
-              key={i}
-              className="bg-black/40 text-white border border-border [box-shadow:0_-10px_80px_-20px_#ffffff1f_inset] w-[70vw] text-lg px-4 py-2 max-w-[calc(100vw - 300px)] leading-tight rounded-2xl left-10 mb-3 flex justify-between items-center height-[60px]"
-            >
-              <span>{topic}</span>
-              <div className="py-0.5 flex gap-3 font-light uppercase">
-                <Link
-                  className="!bg-gradient-to-tr from-yellow-400/20 via-red-500/20 to-purple-500/20 rounded-md ring-1 ring-white/10 hover:shadow-lg text-white py-1.5 px-5 text-sm"
-                  href={`/reel?subject=${subject}&topic=${topic}`}
-                >
-                  Reel
-                </Link>
-                <Link
-                  className="rounded-md ring-1 ring-white/10 hover:shadow-lg bg-gradient-to-tr from-sky-400 via-sky-600 to-sky-800 text-white py-1.5 px-5 text-sm"
-                  href={`/animation?subject=${subject}&topic=${topic}`}
-                >
-                  Animation
-                </Link>
+          {(topicsQuery.data ? JSON.parse(topicsQuery.data) : []).map(
+            (topic, i) => (
+              <div
+                key={i}
+                className="bg-black/40 text-white border border-border [box-shadow:0_-10px_80px_-20px_#ffffff1f_inset] w-[70vw] text-lg px-4 py-2 max-w-[calc(100vw - 300px)] leading-tight rounded-2xl left-10 mb-3 flex justify-between items-center height-[60px]"
+              >
+                <span>{topic}</span>
+                <div className="py-0.5 flex gap-3 font-light uppercase">
+                  <Link
+                    className="!bg-gradient-to-tr from-yellow-400/20 via-red-500/20 to-purple-500/20 rounded-md ring-1 ring-white/10 hover:shadow-lg text-white py-1.5 px-5 text-sm"
+                    href={`/reel?subject=${subject}&topic=${topic}`}
+                  >
+                    Reel
+                  </Link>
+                  <Link
+                    className="rounded-md ring-1 ring-white/10 hover:shadow-lg bg-gradient-to-tr from-sky-400 via-sky-600 to-sky-800 text-white py-1.5 px-5 text-sm"
+                    href={`/animation?subject=${subject}&topic=${topic}`}
+                  >
+                    Animation
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
       </main>
     </div>

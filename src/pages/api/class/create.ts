@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
 import { authOptions } from '@/server/auth';
-import { UserRole } from '@prisma/client';
+import { SubjectEnum, UserRole } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 
@@ -18,6 +18,8 @@ export default async function handler(
   }
 
   const { standard, section } = req.body;
+
+  console.log({ standard, section });
 
   if (!standard || !section) {
     return res
@@ -41,6 +43,15 @@ export default async function handler(
         section,
         users: {
           connect: { id: session.user.id! },
+        },
+        subjects: {
+          create: [
+            { name: SubjectEnum.MATHS, topics: '[]' },
+            { name: SubjectEnum.ENGLISH, topics: '[]' },
+            { name: SubjectEnum.MORAL_VALUES, topics: '[]' },
+            { name: SubjectEnum.SCIENCE, topics: '[]' },
+            { name: SubjectEnum.SOCIAL_STUDIES, topics: '[]' },
+          ],
         },
       },
     });

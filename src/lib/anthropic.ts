@@ -66,3 +66,34 @@ export async function generateFeedItem(subject: string) {
       "So there I was, trying to figure out the limit of my romantic prospects as they approached zero. Naturally, I thought, 'Hey, why not apply L'Hôpital's Rule?' Big mistake. I differentiated my charm and divided it by the derivative of my social skills. Turns out, both were approaching zero at an alarming rate. Now I'm stuck in an infinite loop of awkward conversations and missed opportunities. On the bright side, I've discovered that my love life is a lot like an improper integral - it exists, but it's unbounded and hard to evaluate. Any fellow math nerds out there with advice on how to optimize my dating algorithm? Or should I just accept that I'm destined to be a lonely point on the x-axis of life?",
   };
 }
+
+export async function generateTopics(subject: string, standard: string) {
+  const msg = await anthropic.messages.create({
+    model: 'claude-3-5-sonnet-20240620',
+    max_tokens: 400,
+    temperature: 0.8,
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: `Generate a list of 6 important topics for ${subject} that are typically covered in a ${standard} standard curriculum. Please provide the response as a JSON array of strings. \n\nHere\'s a sample structure for your JSON output:\n\n["Polynomials", "Circles", "Quadratic Equations"]`,
+          },
+        ],
+      },
+    ],
+  });
+
+  const contents = msg.content[0];
+
+  if (contents?.type === 'text') {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return JSON.parse(contents.text.slice(contents.text.indexOf('[')));
+    } catch (e) {
+      console.log(e);
+      return [];
+    }
+  }
+}

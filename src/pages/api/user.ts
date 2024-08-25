@@ -1,8 +1,7 @@
-import prisma from '@/lib/prisma';
-import { authOptions } from '@/server/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/server/auth';
+import prisma from '@/lib/prisma';
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,24 +19,15 @@ export default async function handler(
   try {
     const user = await prisma.user.findUnique({
       where: { email: session.user.email! },
-      include: { class: { include: { users: true } } },
     });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (!user.class) {
-      return res
-        .status(404)
-        .json({ message: 'User is not assigned to a class' });
-    }
-
-    console.log(user.class);
-
-    return res.status(200).json({ class: user.class });
+    return res.status(200).json(user);
   } catch (error) {
-    console.error('Error fetching user class:', error);
+    console.error('Error fetching user:', error);
     return res.status(500).json({ message: 'Internal server error' });
   }
 }

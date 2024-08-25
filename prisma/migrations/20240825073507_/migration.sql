@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Subject" ALTER COLUMN "topics" SET NOT NULL,
+ALTER COLUMN "topics" SET DATA TYPE TEXT;

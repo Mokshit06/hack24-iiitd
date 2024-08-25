@@ -1,12 +1,14 @@
 import Navbar from '@/components/navbar';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 export default function JoinClass() {
   const [standard, setStandard] = useState('');
-  const [section, setSection] = useState('')
+  const [section, setSection] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   return (
@@ -29,14 +31,14 @@ export default function JoinClass() {
             if (!section) {
               return toast.error('Please enter a valid section.');
             }
-            
+
             setSubmitting(true);
 
             await fetch('/api/class/create', {
               method: 'POST',
               body: JSON.stringify({
                 section: section,
-                standard: parseInt(standard)
+                standard: parseInt(standard),
               }),
               headers: {
                 'Content-Type': 'application/json',
@@ -44,7 +46,8 @@ export default function JoinClass() {
             });
 
             setSubmitting(false);
-            await router.replace('/class');
+            queryClient.invalidateQueries({ queryKey: ['class'] });
+            await router.push('/dashboard');
           }}
           className="rounded-xl ring shadow-lg bg-black/20 min-w-[450px] ring-border py-10 -mt-12 px-8"
         >
@@ -52,12 +55,14 @@ export default function JoinClass() {
             Create Class
           </h1>
           <div className="mt-8 w-full">
-            <p className="text-lg mb-4 text-white">
-              Enter Standard
-            </p>
-            <input type='number' min={1} max={12} step={1} 
+            <p className="text-lg mb-4 text-white">Enter Standard</p>
+            <input
+              type="number"
+              min={1}
+              max={12}
+              step={1}
               placeholder="1-12"
-              className="bg-[rgb(59,30,43)] text-neutral-100 outline-none focus:outline-none focus-within:outline-none w-full border-none h-12 rounded-lg text-xl px-6 focus:border-none"
+              className="bg-[rgb(30_41_59/1)] text-neutral-100 outline-none focus:outline-none focus-within:outline-none w-full border-none h-12 rounded-lg text-xl px-6 focus:border-none"
               required
               disabled={submitting}
               value={standard}
@@ -65,15 +70,13 @@ export default function JoinClass() {
             />
           </div>
           <div className="mt-8 w-full">
-            <p className="text-lg mb-4 text-white">
-              Enter Section
-            </p>
+            <p className="text-lg mb-4 text-white">Enter Section</p>
             <input
               placeholder="A-Z"
-              className="bg-[rgb(59,30,43)] text-neutral-100 outline-none focus:outline-none focus-within:outline-none w-full border-none h-12 rounded-lg text-xl px-6 focus:border-none"
+              className="bg-[rgb(30_41_59/1)] text-neutral-100 outline-none focus:outline-none focus-within:outline-none w-full border-none h-12 rounded-lg text-xl px-6 focus:border-none"
               required
               disabled={submitting}
-              value={standard}
+              value={section}
               onChange={e => setSection(e.target.value)}
             />
           </div>
