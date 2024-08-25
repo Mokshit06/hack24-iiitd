@@ -15,38 +15,42 @@ datasource db {
 }
 
 model User {
-  id                String        @id @default(cuid())
-  name              String
-  email             String        @unique
-  emailVerified     DateTime?     @map("email_verified")
-  image             String?
-  class             Class?        @relation(fields: [classId], references: [id])
-  classId           String?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  progress          Progress[]
-  active_assigments Assignments[]
-  accounts          Account[]
-  saved             Saved[]
-  Session           Session[]
+  id            String     @id @default(cuid())
+  name          String
+  email         String     @unique
+  emailVerified DateTime?  @map("email_verified")
+  image         String?
+  class         Class?     @relation(fields: [classId], references: [id])
+  classId       String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  progress      Progress[]
+  accounts      Account[]
+  saved         Saved[]
+  Session       Session[]
+  role          UserRole   @default(STUDENT)
+}
+
+enum UserRole {
+  TEACHER
+  STUDENT
 }
 
 model Class {
-  id          String        @id @default(cuid())
-  name        String
-  users       User[]
-  assignments Assignments[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id        String    @id @default(cuid())
+  name      String
+  users     User[]
+  subjects  Subject[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
-model Assignments {
+model Topic {
   id       String     @id @default(cuid())
   name     String
-  class    Class      @relation(fields: [class_id], references: [id])
-  class_id String
-  users    User[]
   progress Progress[]
+
+  Subject Subject[]
 }
 
 model VerificationToken {
@@ -69,13 +73,13 @@ model Session {
 }
 
 model Progress {
-  id           String      @id @default(cuid())
-  user         User        @relation(fields: [user_id], references: [id])
-  user_id      String      @unique
-  assignment   Assignments @relation(fields: [assignmentId], references: [id])
-  assignmentId String
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @default(now()) @updatedAt
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [user_id], references: [id])
+  user_id   String   @unique
+  topic     Topic    @relation(fields: [topicId], references: [id])
+  topicId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 // Necessary for Next auth
@@ -115,4 +119,11 @@ model Reel {
   username  String
   createdAt DateTime @default(now())
   saved     Saved[]
+}
+
+model Subject {
+  id      String  @id @default(cuid())
+  name    String
+  topics  Topic[]
+  classes Class[]
 }

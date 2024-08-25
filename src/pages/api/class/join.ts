@@ -1,6 +1,8 @@
 import prisma from '@/lib/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/server/auth';
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,12 +12,14 @@ export default async function handler(
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
   if (!session || !session.user) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  const { classId } = req.query;
+  const { classId } = req.body;
+
+  console.log(classId, typeof req.body);
 
   if (!classId || typeof classId !== 'string') {
     return res.status(400).json({ message: 'Invalid class ID' });
