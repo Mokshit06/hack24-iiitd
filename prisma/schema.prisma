@@ -40,7 +40,6 @@ model Class {
   id        String    @id @default(cuid())
   standard  Int       @default(1)
   section   String    @default("A")
-  name      String
   users     User[]
   subjects  Subject[]
   createdAt DateTime  @default(now())
